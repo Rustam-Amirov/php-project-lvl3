@@ -1,7 +1,7 @@
 {
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "This is third project for hexlet",
     "keywords": [
         "framework",
         "laravel"
