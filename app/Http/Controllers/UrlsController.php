@@ -18,7 +18,7 @@ class UrlsController extends Controller
     public function index()
     {
         //
-        $urls = DB::select('select * from urls');
+        $urls = DB::table('urls')->orderBy('id')->paginate(15);
         return view('urls.index', ['urls' => $urls]);
     }
 
