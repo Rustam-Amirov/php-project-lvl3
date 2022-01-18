@@ -45,7 +45,10 @@ class UrlsController extends Controller
             flash('Некорректный URL')->error();
             $validator->validate();
         }
-        $urlName = $validator->validated()['url']['name'];
+        $scheme = parse_url($validator->validated()['url']['name'], PHP_URL_SCHEME);
+        $host = parse_url($validator->validated()['url']['name'], PHP_URL_HOST);
+        $urlName = $scheme . '://' . $host;
+
         $isExistUrl = DB::table('urls')->where('name', $urlName)->exists();
         if (!$isExistUrl) {
             $now = Carbon::now();
