@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UrlsController;
+use App\Http\Controllers\UrlController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +18,6 @@ Route::get('/', function () {
     return view('main');
 })->name('main');
 
-Route::resource('urls', UrlsController::class)->only([
+Route::resource('urls', UrlController::class)->only([
     'index', 'show', 'store'
 ]);

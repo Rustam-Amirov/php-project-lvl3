@@ -10,6 +10,35 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  container-job:
+    runs-on: ubuntu-18.04
+
+    # runs all of the steps inside the specified continer rather than on the VM host.  
+    # Because of this the network configuration changes from host based network to a container network.
+    container:
+      image: php:7.3-alpine
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgresdb
+          POSTGRES_USER: postgresuser
+          POSTGRES_PASSWORD: secret
+          POSTGRES_HOST: postgres
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+      env:
+        # use postgres for the host here because we have specified a container for the job.
+        # If we were running the job on the VM this would be localhost
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -25,10 +54,18 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           # Specify the PHP version
-          php-version: '8.0'
+          php-version: '8.1'
       - name: Install
         # Install project
         run: make install
       - name: Run linter
         # Run Linter
         run: make lint
+      - name: Run PHPUnit tests 
+        run: vendor/bin/phpunit --no-coverage
+        env:
+          # use localhost for the host here because we have specified a container for the job.
+          # If we were running the job on the VM this would be postgres
+          DB_HOST: localhost
+          DB_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
+          # run: docker exec -i canie-api vendor/bin/phpunit
