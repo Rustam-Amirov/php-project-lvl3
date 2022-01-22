@@ -61,6 +61,8 @@ jobs:
       - name: Run linter
         # Run Linter
         run: make lint
+      - name: make setup
+        run: make setup
       - name: Run PHPUnit tests 
         run: vendor/bin/phpunit --no-coverage
         env:
