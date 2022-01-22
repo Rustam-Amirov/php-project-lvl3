@@ -63,11 +63,11 @@ jobs:
         run: make lint
       - name: make setup
         run: make setup
-      - name: Run PHPUnit tests 
-        run: vendor/bin/phpunit --no-coverage
         env:
           # use localhost for the host here because we have specified a container for the job.
           # If we were running the job on the VM this would be postgres
           DB_HOST: localhost
           DB_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
           # run: docker exec -i canie-api vendor/bin/phpunit
+      - name: Run PHPUnit tests 
+        run: make test
