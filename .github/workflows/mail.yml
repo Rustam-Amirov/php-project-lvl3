@@ -10,39 +10,25 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  container-job:
-    runs-on: ubuntu-18.04
-
-    # runs all of the steps inside the specified continer rather than on the VM host.  
-    # Because of this the network configuration changes from host based network to a container network.
-    container:
-      image: php:7.3-alpine
-
+  laravel:
+    name: Laravel (PHP ${{ matrix.php-versions }})
+    runs-on: ubuntu-latest
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: localhost
+      DB_PASSWORD: postgres
+      DB_USERNAME: postgres
+      DB_DATABASE: postgres
     services:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: postgresdb
-          POSTGRES_USER: postgresuser
-          POSTGRES_PASSWORD: secret
-          POSTGRES_HOST: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
         ports:
-        - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    steps:
-    - uses: actions/checkout@v1
-      env:
-        # use postgres for the host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be localhost
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
-
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -58,18 +44,20 @@ jobs:
       - name: Install
         # Install project
         run: make install
+
+      - name: make setup
+        run: make setup
+
+      - name: Run Migration
+        run: make migrate
+        env:
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
+      - name: Run PHPUnit tests 
+        run: make test
+        env:
+          DB_PORT: ${{ job.services.postgres.ports[5432] }}
+
       - name: Run linter
         # Run Linter
         run: make lint
-      - name: make setup
-        run: make setup
-        env:
-          # use localhost for the host here because we have specified a container for the job.
-          # If we were running the job on the VM this would be postgres
-          DB_HOST: localhost
-          DB_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
-          # run: docker exec -i canie-api vendor/bin/phpunit
-      - name: make migration
-        run: make migrate
-      - name: Run PHPUnit tests 
-        run: make test
