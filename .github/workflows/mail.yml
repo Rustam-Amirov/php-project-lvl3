@@ -69,5 +69,7 @@ jobs:
           DB_HOST: localhost
           DB_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
           # run: docker exec -i canie-api vendor/bin/phpunit
+      - name: make migration
+        run: make migrate
       - name: Run PHPUnit tests 
         run: make test
