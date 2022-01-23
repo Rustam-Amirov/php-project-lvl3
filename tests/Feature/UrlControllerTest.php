@@ -40,7 +40,7 @@ class UrlControllerTest extends TestCase
 
     public function testShow()
     {
-        $url = DB::table('urls')->first(); 
+        $url = DB::table('urls')->first();
         $response = $this->get(route('urls.show', $url->id));
         $response->assertOk();
     }
