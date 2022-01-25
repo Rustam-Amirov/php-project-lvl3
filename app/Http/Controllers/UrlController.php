@@ -17,8 +17,14 @@ class UrlController extends Controller
      */
     public function index()
     {
-        //
-        $urls = DB::table('urls')->orderBy('id')->paginate(15);
+        $urls = DB::table('urls')->leftjoin(
+            'url_checks',
+            function ($join) {
+                $join->on('url_id', '=', 'urls.id')
+                ->selectRaw('url_id, max(created_at) as created_at')
+                ->groupBy('url_id');
+            }
+        )->select(['urls.id', 'url_checks.created_at', 'name'])->orderBy('urls.id')->paginate(15);
         return view('urls.index', ['urls' => $urls]);
     }
 
