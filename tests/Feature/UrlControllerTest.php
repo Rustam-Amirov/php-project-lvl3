@@ -5,13 +5,17 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Url;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UrlControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected $seed = true;
     protected function setUp(): void
     {
         parent::setUp();
-        Url::factory()->count(2)->make()->toArray();
+        Url::factory()->create();
     }
 
     public function testIndex()

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UrlController;
+use App\Http\Controllers\UrlChecksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::get('/', function () {
 Route::resource('urls', UrlController::class)->only([
     'index', 'show', 'store'
 ]);
+
+Route::post('urls/{id}/checks', [UrlChecksController::class, 'doCheck'])->name('url_check');

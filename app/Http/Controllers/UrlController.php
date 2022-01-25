@@ -73,7 +73,8 @@ class UrlController extends Controller
     {
         //
         $url = DB::table('urls')->find($id);
-        return view('urls.show', ['url' => $url]);
+        $checks = DB::table('url_checks')->where('url_id', $id)->get();
+        return view('urls.show', ['url' => $url, 'checks' => $checks]);
     }
 
     /**

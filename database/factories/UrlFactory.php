@@ -18,7 +18,7 @@ class UrlFactory extends Factory
         return [
             'id' => $this->faker->randomDigitNotNull(),
             'name' => $this->faker->url(),
-            'created_at' => $this->faker->unixTime(),
+            'created_at' => $this->faker->dateTimeBetween('-1 week', '+1 week'),
         ];
     }
 }
