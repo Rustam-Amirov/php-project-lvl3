@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class UrlControllerTest extends TestCase
 {
     use RefreshDatabase;
+
     protected $seed = true;
 
     protected function setUp(): void
