@@ -17,26 +17,20 @@ class UrlController extends Controller
      */
     public function index()
     {
-        $urls = DB::table('urls')->leftjoin(
-            'url_checks',
-            function ($join) {
-                $join->on('url_id', '=', 'urls.id')
-                ->selectRaw('url_id, max(created_at) as created_at')
-                ->groupBy('url_id');
-            }
-        )->select(['urls.id', 'url_checks.created_at', 'name'])->orderBy('urls.id')->paginate(15);
+        $url_checks = DB::table('url_checks')
+                        ->selectRaw('url_id, max(created_at) as created_at')
+                        ->groupBy('url_id');
+
+        $urls = DB::table('urls')->leftjoinSub($url_checks, 'dates', 'dates.url_id', '=', 'urls.id')
+                    ->leftJoin('url_checks', function ($join) {
+                        $join->on('url_checks.url_id', '=', 'urls.id')
+                        ->on('dates.created_at', '=', 'url_checks.created_at');
+                    })->select(['urls.id', 'dates.created_at', 'name', 'status_code'])
+                    ->orderBy('urls.id')
+                    ->paginate(15);
         return view('urls.index', ['urls' => $urls]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -77,43 +71,8 @@ class UrlController extends Controller
      */
     public function show($id)
     {
-        //
         $url = DB::table('urls')->find($id);
-        $checks = DB::table('url_checks')->where('url_id', $id)->get();
+        $checks = DB::table('url_checks')->where('url_id', $id)->orderBy('id', 'desc')->get();
         return view('urls.show', ['url' => $url, 'checks' => $checks]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

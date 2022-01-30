@@ -10,8 +10,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class UrlControllerTest extends TestCase
 {
     use RefreshDatabase;
-
     protected $seed = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,8 +32,8 @@ class UrlControllerTest extends TestCase
 
         $scheme = parse_url($factoryData['name'], PHP_URL_SCHEME);
         $host = parse_url($factoryData['name'], PHP_URL_HOST);
-        $url = $scheme . '://' . $host;
-        $url = DB::table('urls')->where('name', $url)->first();
+        $urlName = $scheme . '://' . $host;
+        $url = DB::table('urls')->where('name', $urlName)->first();
 
         $response->assertRedirect(route('urls.show', $url->id));
         $response->assertSessionHasNoErrors();
