@@ -53,8 +53,7 @@ jobs:
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
 
-      - name: Run PHPUnit tests & publish code coverage
-        run: make test
+      - name: Run PHPUnit tests
         uses: paambaati/codeclimate-action@v2.6.0
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
