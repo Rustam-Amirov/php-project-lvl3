@@ -17,9 +17,9 @@ class UrlChecks extends Migration
             $table->increments('id');
             $table->integer('url_id');
             $table->integer('status_code')->nullable();
-            $table->string('h1')->nullable();
-            $table->string('title')->nullable();
-            $table->string('description')->nullable();
+            $table->text('h1')->nullable();
+            $table->text('title')->nullable();
+            $table->text('description')->nullable();
             $table->timestamp('created_at');
             $table->foreign('url_id')->references('id')->on('urls')->onUpdate('cascade')->onDelete('cascade');
         });
