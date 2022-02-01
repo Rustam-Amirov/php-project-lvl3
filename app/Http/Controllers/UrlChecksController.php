@@ -16,7 +16,7 @@ class UrlChecksController extends Controller
         $document = new Document($response->body());
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
-        $content = optional($document->first('meta[name=description][content]'), function($meta) {
+        $content = optional($document->first('meta[name=description][content]'), function ($meta) {
             return $meta->getAttribute('content');
         });
         DB::table('url_checks')->insert([
