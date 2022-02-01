@@ -21,7 +21,7 @@ class UrlController extends Controller
                         ->selectRaw('url_id, max(created_at) as created_at')
                         ->groupBy('url_id');
 
-        $urls = DB::table('urls')->leftjoinSub($url_checks, 'dates', 'dates.url_id', '=', 'urls.id')
+        $urls = DB::table('urls')->leftJoinSub($url_checks, 'dates', 'dates.url_id', '=', 'urls.id')
                     ->leftJoin('url_checks', function ($join) {
                         $join->on('url_checks.url_id', '=', 'urls.id')
                         ->on('dates.created_at', '=', 'url_checks.created_at');

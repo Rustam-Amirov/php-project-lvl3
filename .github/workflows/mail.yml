@@ -53,10 +53,16 @@ jobs:
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
 
-      - name: Run PHPUnit tests 
+      - name: Run PHPUnit tests & publish code coverage
         run: make test
+        uses: paambaati/codeclimate-action@v2.6.0
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          coverageLocations: rustam-amirov/build/logs/clover.xml:clover
+          debug: true
 
       - name: Run linter
         # Run Linter

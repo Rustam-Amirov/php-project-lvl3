@@ -9,6 +9,12 @@ use DiDom\Document;
 
 class UrlChecksController extends Controller
 {
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function doCheck($id)
     {
         $url = DB::table('urls')->select('name')->where('id', '=', $id)->first();

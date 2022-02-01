@@ -33,3 +33,6 @@ lint-fix:
 
 install:
 	composer install 
+
+test-coverage:
+	composer phpunit tests -- --coverage-clover build/logs/clover.xml
