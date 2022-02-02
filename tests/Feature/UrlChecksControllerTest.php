@@ -11,7 +11,14 @@ class UrlChecksControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @var boolean
+     */
     protected $seed = true;
+
+    /**
+     * @var array
+     */
     private $url;
 
     protected function setUp(): void
