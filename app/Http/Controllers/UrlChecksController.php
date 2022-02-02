@@ -18,7 +18,8 @@ class UrlChecksController extends Controller
     public function doCheck($id)
     {
         $url = DB::table('urls')->select('name')->where('id', '=', $id)->first();
-        $response = Http::get($url->name);
+        $name = $url->name;
+        $response = Http::get($name);
         $document = new Document($response->body());
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();

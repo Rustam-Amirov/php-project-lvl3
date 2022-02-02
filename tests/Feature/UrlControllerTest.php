@@ -11,6 +11,9 @@ class UrlControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * @var boolean
+     */
     protected $seed = true;
 
     protected function setUp(): void
@@ -36,17 +39,20 @@ class UrlControllerTest extends TestCase
         $urlName = $scheme . '://' . $host;
         $url = DB::table('urls')->where('name', $urlName)->first();
 
-        $response->assertRedirect(route('urls.show', $url->id));
+        $id = $url->id;
+        $name = $url->name;
+        $response->assertRedirect(route('urls.show', $id));
         $response->assertSessionHasNoErrors();
 
-        $response = $this->get(route('urls.index'))->assertSeeText($url->name);
-        $this->assertDatabaseHas('urls', ['name' => $url->name]);
+        $response = $this->get(route('urls.index'))->assertSeeText($name);
+        $this->assertDatabaseHas('urls', ['name' => $name]);
     }
 
     public function testShow()
     {
         $url = DB::table('urls')->first();
-        $response = $this->get(route('urls.show', $url->id));
+        $id = $url->id;
+        $response = $this->get(route('urls.show', $id));
         $response->assertOk();
     }
 }
