@@ -57,8 +57,6 @@ jobs:
         run: make test
         env:
           DB_PORT: ${{ job.services.postgres.ports[5432] }}
-        with:
-          debug: true
 
       - name: Run linter
         # Run Linter
