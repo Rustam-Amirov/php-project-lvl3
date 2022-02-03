@@ -18,8 +18,11 @@ class UrlChecksController extends Controller
     public function doCheck($id)
     {
         $url = DB::table('urls')->select('name')->where('id', '=', $id)->first();
-        $name = $url->name;
-        $response = Http::get($name);
+        if (!isset($url->name)) {
+            flash('Сайт не найден');
+            return redirect(route('urls.show', ['url' => $id]));
+        }
+        $response = Http::get($url->name);
         $document = new Document($response->body());
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
