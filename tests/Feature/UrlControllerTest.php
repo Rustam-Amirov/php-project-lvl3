@@ -39,20 +39,23 @@ class UrlControllerTest extends TestCase
         $urlName = $scheme . '://' . $host;
         $url = DB::table('urls')->where('name', $urlName)->first();
 
-        $id = $url->id;
-        $name = $url->name;
-        $response->assertRedirect(route('urls.show', $id));
+        if (!isset($url->id) || !isset($url->name)) {
+            throw new \Exception("Не найден URL", 1);
+        }
+        $response->assertRedirect(route('urls.show', $url->id));
         $response->assertSessionHasNoErrors();
 
-        $response = $this->get(route('urls.index'))->assertSeeText($name);
-        $this->assertDatabaseHas('urls', ['name' => $name]);
+        $response = $this->get(route('urls.index'))->assertSeeText($url->name);
+        $this->assertDatabaseHas('urls', ['name' => $url->name]);
     }
 
     public function testShow()
     {
         $url = DB::table('urls')->first();
-        $id = $url->id;
-        $response = $this->get(route('urls.show', $id));
+        if (!isset($url->id)) {
+            throw new \Exception("Не найден URL", 1);
+        }
+        $response = $this->get(route('urls.show', $url->id));
         $response->assertOk();
     }
 }

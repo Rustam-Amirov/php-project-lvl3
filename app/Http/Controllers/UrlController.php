@@ -60,8 +60,10 @@ class UrlController extends Controller
             flash('Страница уже существует');
         }
         $url = DB::table('urls')->where('name', $urlName)->first();
-        $id = $url->id;
-        return redirect()->route('urls.show', ['url' => $id]);
+        if (!isset($url->id)) {
+            return abort(404);
+        }
+        return redirect()->route('urls.show', ['url' => $url->id]);
     }
 
     /**
